@@ -1,7 +1,7 @@
 {
   "scripts": {
     "postinstall": "netlify-lambda install",
-    "buildNetlify": "netlify-lambda build src",
+    "buildNetlify": "netlify-lambda build build",
     "devNetlify": "netlify-lambda serve src",
     "build": "tsc --project ./",
     "start": "nodemon -r dotenv/config src/bot.ts"
