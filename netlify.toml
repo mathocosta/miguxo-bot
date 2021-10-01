@@ -1,5 +1,5 @@
 [build]
   publish = "build"
   command = "netlify-lambda build src"
-  functions = "functions-build"
+  functions = "build/functions"
 
