@@ -11,7 +11,7 @@
     "@netlify/functions": "^0.7.2",
     "dotenv": "^10.0.0",
     "netlify-lambda": "^2.0.14",
-    "telegraf": "3.9.0",
+    "telegraf": "3.34.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

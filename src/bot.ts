@@ -23,6 +23,8 @@ const bot = new Telegraf(token);
 
 // BOT SETUP
 
+bot.launch();
+
 bot.on("inline_query", async (ctx) => {
   const textToParse = ctx.inlineQuery.query;
 
@@ -36,8 +38,6 @@ bot.on("inline_query", async (ctx) => {
 
   return ctx.answerInlineQuery(inlineQueryResults);
 });
-
-bot.launch();
 
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
