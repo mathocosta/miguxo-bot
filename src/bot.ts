@@ -1,5 +1,4 @@
-import { APIGatewayEvent } from "aws-lambda";
-import { Telegraf } from "telegraf";
+import { Handler } from "@netlify/functions";
 import { InlineQueryResultArticle } from "typegram";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -12,12 +11,15 @@ import {
   Operation,
 } from "./operations";
 
+const { Telegraf } = require("telegraf");
+
 const token = process.env.BOT_TOKEN;
+
 if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
 }
 
-const bot = new Telegraf(token);
+const bot = new Telegraf.Telegraf(token);
 
 // BOT SETUP
 
@@ -40,19 +42,6 @@ bot.launch();
 // Enable graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
-
-// NETLIFY
-
-export async function handler(event: APIGatewayEvent) {
-  if (event.body != undefined) {
-    bot.handleUpdate(JSON.parse(event.body));
-  }
-
-  return {
-    statusCode: 200,
-    body: "",
-  };
-}
 
 // TEXT PROCESSING
 
@@ -110,3 +99,18 @@ const getOperationSetFor = (dialectType: Dialect): Operation[] => {
       return general;
   }
 };
+
+// NETLIFY
+
+const handler: Handler = async (event) => {
+  if (!!event.body) {
+    bot.handleUpdate(JSON.parse(event.body));
+  }
+
+  return {
+    statusCode: 200,
+    body: "",
+  };
+};
+
+export { handler };
