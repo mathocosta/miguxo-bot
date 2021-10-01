@@ -11,7 +11,7 @@ import {
   Operation,
 } from "./operations";
 
-const { Telegraf } = require("telegraf");
+const Telegraf = require("telegraf");
 
 const token = process.env.BOT_TOKEN;
 
@@ -19,7 +19,7 @@ if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
 }
 
-const bot = new Telegraf.Telegraf(token);
+const bot = new Telegraf(token);
 
 // BOT SETUP
 
