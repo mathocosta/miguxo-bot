@@ -1037,6 +1037,13 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
+"@types/telebot@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@types/telebot/-/telebot-1.2.3.tgz#e37dae3246b9a0b06b5a7468fa8bbc91764c9234"
+  integrity sha512-TqCzII1ErjfjdnCaj5nCQHUQ1CNtA/yH0B+R5sLmdzx5ojEIQQwYeMH7f42FWFPhpTo4wbNLxgcEnpnGUwrT5w==
+  dependencies:
+    "@types/node" "*"
+
 "@types/uuid@^8.3.1":
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.1.tgz#1a32969cf8f0364b3d8c8af9cc3555b7805df14f"
