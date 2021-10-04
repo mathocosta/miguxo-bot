@@ -8,9 +8,7 @@
     "start": "nodemon -r dotenv/config src/bot.ts"
   },
   "dependencies": {
-    "@netlify/functions": "^0.7.2",
     "dotenv": "^10.0.0",
-    "netlify-lambda": "^2.0.14",
     "telebot": "^1.4.1",
     "uuid": "^8.3.2"
   },
@@ -22,6 +20,7 @@
     "@types/node": "^16.9.6",
     "@types/telebot": "^1.2.3",
     "@types/uuid": "^8.3.1",
+    "netlify-lambda": "^2.0.14",
     "nodemon": "^2.0.12",
     "ts-node": "^10.2.1",
     "typegram": "^3.4.3",
