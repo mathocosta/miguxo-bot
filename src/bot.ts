@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from "aws-lambda";
-import { Telegraf } from "telegraf";
+import TeleBot from "telebot";
 import { InlineQueryResultArticle } from "typegram";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -13,16 +13,17 @@ import {
 } from "./operations";
 
 const token = process.env.BOT_TOKEN;
+
 if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
 }
 
-const bot = new Telegraf(token);
+const newBot = new TeleBot(token);
 
 // BOT SETUP
 
-bot.on("inline_query", async (ctx) => {
-  const textToParse = ctx.inlineQuery.query;
+newBot.on("inlineQuery", (msg) => {
+  const textToParse = msg?.query;
 
   if (isEmpty(textToParse)) return;
 
@@ -32,20 +33,24 @@ bot.on("inline_query", async (ctx) => {
     getInlineQueryResult(textToParse, Dialect.Orkut),
   ];
 
-  return ctx.answerInlineQuery(inlineQueryResults);
+  const answers = newBot.answerList(msg.id);
+
+  inlineQueryResults.forEach((r) => answers.addArticle(r));
+
+  return newBot.answerQuery(answers);
 });
 
-bot.launch();
+newBot.start();
 
 // Enable graceful stop
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+process.once("SIGINT", () => newBot.stop("SIGINT"));
+process.once("SIGTERM", () => newBot.stop("SIGTERM"));
 
 // NETLIFY
 
 export async function handler(event: APIGatewayEvent) {
   if (event.body != undefined) {
-    bot.handleUpdate(JSON.parse(event.body));
+    newBot.receiveUpdates(JSON.parse(event.body));
   }
 
   return {
