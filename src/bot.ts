@@ -51,7 +51,11 @@ process.once("SIGTERM", () => newBot.stop("SIGTERM"));
 
 export async function handler(event: APIGatewayEvent) {
   if (event.body != undefined) {
-    newBot.receiveUpdates(JSON.parse(event.body));
+    try {
+      await newBot.receiveUpdates(JSON.parse(event.body));
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return {
