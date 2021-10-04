@@ -1,4 +1,3 @@
-import { Handler } from "@netlify/functions";
 import { APIGatewayEvent } from "aws-lambda";
 import TeleBot from "telebot";
 import { InlineQueryResultArticle } from "typegram";
