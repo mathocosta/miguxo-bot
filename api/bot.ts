@@ -11,6 +11,7 @@ import {
   onlyOrkut,
   Operation,
 } from "./operations";
+import { VercelRequest, VercelResponse } from "@vercel/node";
 
 const token = process.env.BOT_TOKEN;
 
@@ -61,6 +62,18 @@ export async function handler(event: APIGatewayEvent) {
     statusCode: 200,
     body: "",
   };
+}
+
+// VERCEL
+
+export default async function (req: VercelRequest, res: VercelResponse) {
+  try {
+    await newBot.receiveUpdates(JSON.parse(req.body));
+  } catch (err) {
+    console.error(err);
+  }
+
+  res.send({ "status": "Running" });
 }
 
 // TEXT PROCESSING
