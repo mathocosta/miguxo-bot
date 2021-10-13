@@ -1,4 +1,3 @@
-import { APIGatewayEvent } from "aws-lambda";
 import TeleBot from "telebot";
 import { InlineQueryResultArticle } from "typegram";
 import { v4 as uuidv4 } from "uuid";
@@ -19,11 +18,18 @@ if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
 }
 
-const newBot = new TeleBot(token);
+const config = {
+  token: token,
+  "buildInPlugins": [],
+  webhook: {
+    url: "https://miguxo-bot-mathocosta.vercel.app/api/bot"
+  }
+};
+const bot = new TeleBot(config);
 
 // BOT SETUP
 
-newBot.on("inlineQuery", (msg) => {
+bot.on("inlineQuery", (msg) => {
   const textToParse = msg?.query;
 
   if (isEmpty(textToParse)) return;
@@ -34,43 +40,29 @@ newBot.on("inlineQuery", (msg) => {
     getInlineQueryResult(textToParse, Dialect.Orkut),
   ];
 
-  const answers = newBot.answerList(msg.id);
+  const answers = bot.answerList(msg.id);
 
   inlineQueryResults.forEach((r) => answers.addArticle(r));
 
-  return newBot.answerQuery(answers);
+  return bot.answerQuery(answers);
 });
 
-newBot.start();
+bot.start();
 
 // Enable graceful stop
-process.once("SIGINT", () => newBot.stop("SIGINT"));
-process.once("SIGTERM", () => newBot.stop("SIGTERM"));
-
-// NETLIFY
-
-export async function handler(event: APIGatewayEvent) {
-  if (event.body != undefined) {
-    try {
-      await newBot.receiveUpdates(JSON.parse(event.body));
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  return {
-    statusCode: 200,
-    body: "",
-  };
-}
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 // VERCEL
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  try {
-    await newBot.receiveUpdates(JSON.parse(req.body));
-  } catch (err) {
-    console.error(err);
+  if (req.body != undefined) {
+    try {
+      const json = JSON.parse(req.body);
+      await bot.receiveUpdates([json]);
+    } catch (err) {
+      console.error(`${err} : ${JSON.stringify(req.body, null, 2)}`);
+    }
   }
 
   res.send({ "status": "Running" });
