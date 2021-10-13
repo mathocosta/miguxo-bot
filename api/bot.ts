@@ -20,10 +20,7 @@ if (token === undefined) {
 
 const config = {
   token: token,
-  "buildInPlugins": [],
-  webhook: {
-    url: "https://miguxo-bot-mathocosta.vercel.app/api/bot"
-  }
+  buildInPlugins: [],
 };
 const bot = new TeleBot(config);
 
@@ -58,14 +55,13 @@ process.once("SIGTERM", () => bot.stop("SIGTERM"));
 export default async function (req: VercelRequest, res: VercelResponse) {
   if (req.body != undefined) {
     try {
-      const json = JSON.parse(req.body);
-      await bot.receiveUpdates([json]);
+      await bot.receiveUpdates([req.body]);
     } catch (err) {
-      console.error(`${err} : ${JSON.stringify(req.body, null, 2)}`);
+      console.error(err);
     }
   }
 
-  res.send({ "status": "Running" });
+  res.send({ status: "Running" });
 }
 
 // TEXT PROCESSING
