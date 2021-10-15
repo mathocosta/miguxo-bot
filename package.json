@@ -1,11 +1,8 @@
 {
-  "main": "src/bot.ts",
+  "main": "api/bot.ts",
   "scripts": {
-    "postinstall": "netlify-lambda install",
-    "buildNetlify": "netlify-lambda build src",
-    "devNetlify": "netlify-lambda serve src",
     "build": "tsc --project ./",
-    "start": "nodemon -r dotenv/config src/bot.ts"
+    "start": "nodemon -r dotenv/config api/bot.ts"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -20,7 +17,7 @@
     "@types/node": "^16.9.6",
     "@types/telebot": "^1.2.3",
     "@types/uuid": "^8.3.1",
-    "netlify-lambda": "^2.0.14",
+    "@vercel/node": "^1.12.1",
     "nodemon": "^2.0.12",
     "ts-node": "^10.2.1",
     "typegram": "^3.4.3",

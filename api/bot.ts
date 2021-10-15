@@ -1,4 +1,3 @@
-import { APIGatewayEvent } from "aws-lambda";
 import TeleBot from "telebot";
 import { InlineQueryResultArticle } from "typegram";
 import { v4 as uuidv4 } from "uuid";
@@ -11,6 +10,7 @@ import {
   onlyOrkut,
   Operation,
 } from "./operations";
+import { VercelRequest, VercelResponse } from "@vercel/node";
 
 const token = process.env.BOT_TOKEN;
 
@@ -18,11 +18,15 @@ if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
 }
 
-const newBot = new TeleBot(token);
+const config = {
+  token: token,
+  buildInPlugins: [],
+};
+const bot = new TeleBot(config);
 
 // BOT SETUP
 
-newBot.on("inlineQuery", (msg) => {
+bot.on("inlineQuery", (msg) => {
   const textToParse = msg?.query;
 
   if (isEmpty(textToParse)) return;
@@ -33,34 +37,31 @@ newBot.on("inlineQuery", (msg) => {
     getInlineQueryResult(textToParse, Dialect.Orkut),
   ];
 
-  const answers = newBot.answerList(msg.id);
+  const answers = bot.answerList(msg.id);
 
   inlineQueryResults.forEach((r) => answers.addArticle(r));
 
-  return newBot.answerQuery(answers);
+  return bot.answerQuery(answers);
 });
 
-newBot.start();
+bot.start();
 
 // Enable graceful stop
-process.once("SIGINT", () => newBot.stop("SIGINT"));
-process.once("SIGTERM", () => newBot.stop("SIGTERM"));
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-// NETLIFY
+// VERCEL
 
-export async function handler(event: APIGatewayEvent) {
-  if (event.body != undefined) {
+export default async function (req: VercelRequest, res: VercelResponse) {
+  if (req.body != undefined) {
     try {
-      await newBot.receiveUpdates(JSON.parse(event.body));
-    } catch (e) {
-      console.error(e);
+      await bot.receiveUpdates([req.body]);
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  return {
-    statusCode: 200,
-    body: "",
-  };
+  res.send({ status: "Running" });
 }
 
 // TEXT PROCESSING
